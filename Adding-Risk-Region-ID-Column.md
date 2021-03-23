@@ -65,7 +65,7 @@ unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/r
 ```
 
 ```
-## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/RtmpLDqrZF/file130962b9e753c/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
+## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/Rtmp0Qg5Gt/file131b115ee8096/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 4 features and 5 fields
 ## Geometry type: POLYGON
 ## Dimension:     XY
@@ -74,7 +74,7 @@ unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/r
 ```
 
 ```r
-# The code below is not related to above but is indicating the zipfolder in this \ working directory. I am taking out the .shp to be use when cutting the data. 
+# The code below is not related to above but is indicating the zipfolder in this working directory. I am taking out the .shp to be use when cutting the data. 
 
 PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
 ```
@@ -98,7 +98,7 @@ particles <- IETC::unzipShape("https://github.com/WWU-IETC-R-Collab/ClipToProjec
 ```
 
 ```
-## Reading layer `SFEI.ID.particles' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/RtmpLDqrZF/file130965eef1f3b/SFEI.ID.particles.shp' using driver `ESRI Shapefile'
+## Reading layer `SFEI.ID.particles' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/Rtmp0Qg5Gt/file131b1115c2030/SFEI.ID.particles.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 43554 features and 12 fields
 ## Geometry type: POINT
 ## Dimension:     XY

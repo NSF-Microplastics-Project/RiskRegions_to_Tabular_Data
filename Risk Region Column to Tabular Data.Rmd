@@ -1,0 +1,72 @@
+---
+title: "Assigning Risk Region Column to Tabular Data"
+author: "Emma Sharpe"
+date: "3/23/2021"
+output: 
+ html_document:
+    code_download: true
+    code_folding: hide
+    df_print: paged
+    keep_md: true
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+---
+# Load packages
+```{r}
+library(tidyverse)
+library(sf)
+library(here)
+library(readxl)
+library(IETC) # To load packages use > devtools::install_github("WWU-IETC-R-Collab/IETC")
+```
+
+# Load Risk Region Shapefile
+```{r}
+# Unzip the shapefile from the GitHub repository "Risk_Region.shapefile"
+unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/raw/main/Data/SFB_RiskRegions_20210304_SP.zip")
+
+# The code below is not related to above but is indicating the zipfolder in this working directory. I am taking out the .shp to be use when cutting the data. 
+
+PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
+```
+
+# Load Tabular Data {.tabset}
+
+## From Github
+```{r}
+# Load tabular data
+particles <- IETC::unzipShape("https://github.com/WWU-IETC-R-Collab/ClipToProjectBoundary/raw/main/SFEI.particles.locations.zip")
+```
+
+## From Excel Document
+```{r}
+### If using an excel sheet ###
+
+# crs.WGS84 <- st_crs(PROJECT.riskregions) # Store WGS84 CRS for defining CRS of tabular data
+
+### Excel Data to sf Object: needs x, y, CRS
+
+# TABULAR_DATA.sf <- TABULAR_DATA %>% 
+# st_as_sf(coords=c("LONGITUDE_COLUMN_NAME", "LATITUDE_COLUMN_NAME"), crs = crs.WGS84)
+```
+
+# Checking Projection
+```{r}
+st_crs(particles)
+st_crs(PROJECT.riskregions) # Check CRS, should match tabular data
+```
+
+If projections dont match this code with transform the risk region shapefile projection to be the same as the projection for the tabular data 
+```{r}
+PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp") %>% # transforms shapefile CRS to WGS84 vs NAD83
+  st_transform(st_crs(particles))
+```
+
+# Join Data
+Joins data by name of risk region based on geographical data 
+```{r}
+# Join Excel Data to Risk Regions
+Tab.Data.RiskRegions <- st_join(particles, PROJECT.riskregions["name"])
+```

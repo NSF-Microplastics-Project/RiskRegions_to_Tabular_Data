@@ -37,6 +37,7 @@ library(tidyverse)
 ```
 
 ```r
+library(utils) # creating shapefiles
 library(sf)
 ```
 
@@ -65,7 +66,7 @@ unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/r
 ```
 
 ```
-## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/Rtmp0Qg5Gt/file131b115ee8096/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
+## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/RtmpvKTTPO/file1354727c5be37/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 4 features and 5 fields
 ## Geometry type: POLYGON
 ## Dimension:     XY
@@ -76,11 +77,11 @@ unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/r
 ```r
 # The code below is not related to above but is indicating the zipfolder in this working directory. I am taking out the .shp to be use when cutting the data. 
 
-PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
+PROJECT.riskregions <- st_read("Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
 ```
 
 ```
-## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/Users/emmasharpe/Documents/B. R Studio /Projects/GitHub Repos/RiskRegions_to_Tabular_Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
+## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/Users/emmasharpe/Documents/B. R Studio /Projects/GitHub Repos/RiskRegions_to_Tabular_Data/Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 4 features and 5 fields
 ## Geometry type: POLYGON
 ## Dimension:     XY
@@ -98,7 +99,7 @@ particles <- IETC::unzipShape("https://github.com/WWU-IETC-R-Collab/ClipToProjec
 ```
 
 ```
-## Reading layer `SFEI.ID.particles' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/Rtmp0Qg5Gt/file131b1115c2030/SFEI.ID.particles.shp' using driver `ESRI Shapefile'
+## Reading layer `SFEI.ID.particles' from data source `/private/var/folders/y9/fm2hb65j7_gf39v8djx1_qyc0000gn/T/RtmpvKTTPO/file1354749c991b3/SFEI.ID.particles.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 43554 features and 12 fields
 ## Geometry type: POINT
 ## Dimension:     XY
@@ -199,12 +200,12 @@ st_crs(PROJECT.riskregions) # Check CRS, should match tabular data
 If projections dont match this code with transform the risk region shapefile projection to be the same as the projection for the tabular data 
 
 ```r
-PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp") %>% # transforms shapefile CRS to WGS84 vs NAD83
+PROJECT.riskregions <- st_read("Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp") %>% # transforms shapefile CRS to WGS84 vs NAD83
   st_transform(st_crs(particles))
 ```
 
 ```
-## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/Users/emmasharpe/Documents/B. R Studio /Projects/GitHub Repos/RiskRegions_to_Tabular_Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
+## Reading layer `SFB_RiskRegions_20210304_SP' from data source `/Users/emmasharpe/Documents/B. R Studio /Projects/GitHub Repos/RiskRegions_to_Tabular_Data/Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp' using driver `ESRI Shapefile'
 ## Simple feature collection with 4 features and 5 fields
 ## Geometry type: POLYGON
 ## Dimension:     XY
@@ -223,4 +224,14 @@ Tab.Data.RiskRegions <- st_join(particles, PROJECT.riskregions["name"])
 ```
 ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
 ## although coordinates are longitude/latitude, st_intersects assumes that they are planar
+```
+
+
+```r
+# write shapefile for SFEI.ID.particles.sf
+st_write(Tab.Data.RiskRegions, "SFEI.particles.riskregion.shp")
+
+# Zip up newly created shapefiles:
+
+zip(zipfile = "SFEI.particles.riskregion.zip", files = c("SFEI.particles.riskregion.dbf", "SFEI.particles.riskregion.prj", "SFEI.particles.riskregion.shp", "SFEI.particles.riskregion.shx")) 
 ```

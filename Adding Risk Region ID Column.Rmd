@@ -16,6 +16,7 @@ output:
 # Load packages
 ```{r}
 library(tidyverse)
+library(utils) # creating shapefiles
 library(sf)
 library(here)
 library(readxl)
@@ -29,7 +30,7 @@ unzipShape("https://github.com/NSF-Microplastics-Project/Risk_Region.shapefile/r
 
 # The code below is not related to above but is indicating the zipfolder in this working directory. I am taking out the .shp to be use when cutting the data. 
 
-PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
+PROJECT.riskregions <- st_read("Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp")
 ```
 
 # Load Tabular Data {.tabset}
@@ -41,15 +42,15 @@ particles <- IETC::unzipShape("https://github.com/WWU-IETC-R-Collab/ClipToProjec
 ```
 
 ## From Excel Document
-```{r}
-### If using an excel sheet ###
+```{r eval=FALSE}
+### If using an excel sheet 
 
-# crs.WGS84 <- st_crs(PROJECT.riskregions) # Store WGS84 CRS for defining CRS of tabular data
+crs.WGS84 <- st_crs(PROJECT.riskregions) # Store WGS84 CRS for defining CRS of tabular data
 
 ### Excel Data to sf Object: needs x, y, CRS
 
-# TABULAR_DATA.sf <- TABULAR_DATA %>% 
-# st_as_sf(coords=c("LONGITUDE_COLUMN_NAME", "LATITUDE_COLUMN_NAME"), crs = crs.WGS84)
+TABULAR_DATA.sf <- TABULAR_DATA %>% 
+  st_as_sf(coords=c("LONGITUDE_COLUMN_NAME", "LATITUDE_COLUMN_NAME"), crs = crs.WGS84)
 ```
 
 # Checking Projection
@@ -60,7 +61,7 @@ st_crs(PROJECT.riskregions) # Check CRS, should match tabular data
 
 If projections dont match this code with transform the risk region shapefile projection to be the same as the projection for the tabular data 
 ```{r}
-PROJECT.riskregions <- st_read("SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp") %>% # transforms shapefile CRS to WGS84 vs NAD83
+PROJECT.riskregions <- st_read("Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskRegions_20210304_SP.shp") %>% # transforms shapefile CRS to WGS84 vs NAD83
   st_transform(st_crs(particles))
 ```
 
@@ -69,4 +70,14 @@ Joins data by name of risk region based on geographical data
 ```{r}
 # Join Excel Data to Risk Regions
 Tab.Data.RiskRegions <- st_join(particles, PROJECT.riskregions["name"])
+```
+
+```{r eval=FALSE}
+# write shapefile for SFEI.ID.particles.sf
+st_write(Tab.Data.RiskRegions, "SFEI.particles.riskregion.shp")
+
+# Zip up newly created shapefiles:
+
+zip(zipfile = "SFEI.particles.riskregion.zip", files = c("SFEI.particles.riskregion.dbf", "SFEI.particles.riskregion.prj", "SFEI.particles.riskregion.shp", "SFEI.particles.riskregion.shx")) 
+
 ```

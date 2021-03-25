@@ -38,7 +38,7 @@ PROJECT.riskregions <- st_read("Data/SFB_RiskRegions_20210304_SP (1)/SFB_RiskReg
 ## From Github
 ```{r}
 # Load tabular data
-particles <- IETC::unzipShape("https://github.com/WWU-IETC-R-Collab/ClipToProjectBoundary/raw/main/SFEI.particles.locations.zip")
+particles <- IETC::unzipShape("https://github.com/NSF-Microplastics-Project/Cutting_by_RiskRegions/raw/main/Data/SFEI.particles.studyarea.zip")
 ```
 
 ## From Excel Document
